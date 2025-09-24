@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using Unity.Netcode;
 using UnityEditorInternal;
 using UnityEngine;
 
-public class PlayerVehicleController : MonoBehaviour
+public class PlayerVehicleController : NetworkBehaviour
 {
     public class SpringData
     {
@@ -38,20 +40,29 @@ public class PlayerVehicleController : MonoBehaviour
     {
         _springDatas = new Dictionary<WheelType, SpringData>();
 
-        foreach(WheelType wheelType in _wheels)
+        foreach (WheelType wheelType in _wheels)
         {
             _springDatas.Add(wheelType, new());
         }
     }
+    public override void OnNetworkSpawn()
+    {
+        _vehicleRigidbody.isKinematic = true;
+        SetOwnerRigidbodyKinematicAsync();
+    }
 
     private void Update()
     {
+        if (!IsOwner) { return; }
+
         SetSteerInput(Input.GetAxis("Horizontal"));
         SetAccelerateInput(Input.GetAxis("Vertical"));
     }
 
     private void FixedUpdate()
     {
+        if (!IsOwner) { return; }
+
         UpdateSuspension();
         UpdateSteering();
         UpdateAcceleration();
@@ -66,19 +77,19 @@ public class PlayerVehicleController : MonoBehaviour
 
     private void SetAccelerateInput(float accelerateInput)
     {
-        _accelerationInput = Mathf.Clamp(accelerateInput, -1f , 1f);
+        _accelerationInput = Mathf.Clamp(accelerateInput, -1f, 1f);
     }
 
     private void UpdateSuspension()
     {
-        foreach(WheelType id in _springDatas.Keys)
+        foreach (WheelType id in _springDatas.Keys)
         {
             CastSpring(id);
             float currentVelocity = _springDatas[id]._currentVelocity;
             float currentLength = _springDatas[id]._currentLength;
 
             float force = SpringMathExtensions.CalculateForceDamped(currentLength, currentVelocity,
-                _vehicleSettings.SpringRestLength, _vehicleSettings.SpringStrength, 
+                _vehicleSettings.SpringRestLength, _vehicleSettings.SpringStrength,
                 _vehicleSettings.SpringDamper);
 
             _vehicleRigidbody.AddForceAtPosition(force * transform.up, GetSpringPosition(id));
@@ -87,9 +98,9 @@ public class PlayerVehicleController : MonoBehaviour
 
     private void UpdateSteering()
     {
-        foreach(WheelType wheelType in _wheels)
+        foreach (WheelType wheelType in _wheels)
         {
-            if(!IsGrounded(wheelType))
+            if (!IsGrounded(wheelType))
             {
                 continue;
             }
@@ -109,7 +120,7 @@ public class PlayerVehicleController : MonoBehaviour
 
     private void UpdateAcceleration()
     {
-        if(Mathf.Approximately(_accelerationInput, 0f))
+        if (Mathf.Approximately(_accelerationInput, 0f))
         {
             return;
         }
@@ -118,18 +129,18 @@ public class PlayerVehicleController : MonoBehaviour
         bool movingForward = forwardSpeed > 0f;
         float speed = Mathf.Abs(forwardSpeed);
 
-        if(movingForward && speed > _vehicleSettings.MaxSpeed)
+        if (movingForward && speed > _vehicleSettings.MaxSpeed)
         {
             return;
         }
-        else if(!movingForward && speed > _vehicleSettings.MaxReverseSpeed)
+        else if (!movingForward && speed > _vehicleSettings.MaxReverseSpeed)
         {
             return;
         }
 
-        foreach(WheelType wheelType in _wheels)
+        foreach (WheelType wheelType in _wheels)
         {
-            if(!IsGrounded(wheelType))
+            if (!IsGrounded(wheelType))
             {
                 continue;
             }
@@ -150,7 +161,7 @@ public class PlayerVehicleController : MonoBehaviour
         const float ALMOST_STOPPING_SPEED = 2f;
         bool almostStopping = speed < ALMOST_STOPPING_SPEED;
 
-        if(almostStopping)
+        if (almostStopping)
         {
             brakesRatio = 1f;
         }
@@ -159,12 +170,12 @@ public class PlayerVehicleController : MonoBehaviour
             bool accelerateContrary =
                 !Mathf.Approximately(_accelerationInput, 0f) &&
                 Vector3.Dot(_accelerationInput * transform.forward, _vehicleRigidbody.linearVelocity) < 0f;
-            
-            if(accelerateContrary)
+
+            if (accelerateContrary)
             {
                 brakesRatio = 1f;
             }
-            else if(Mathf.Approximately(_accelerationInput, 0f))
+            else if (Mathf.Approximately(_accelerationInput, 0f))
             {
                 brakesRatio = 0.1f;
             }
@@ -174,9 +185,9 @@ public class PlayerVehicleController : MonoBehaviour
             }
         }
 
-        foreach(WheelType wheelType in _backWheels)
+        foreach (WheelType wheelType in _backWheels)
         {
-            if(!IsGrounded(wheelType))
+            if (!IsGrounded(wheelType))
             {
                 continue;
             }
@@ -203,10 +214,10 @@ public class PlayerVehicleController : MonoBehaviour
     {
         Vector3 position = GetSpringPosition(wheelType);
 
-        float previousLength = _springDatas[wheelType]._currentLength;  
+        float previousLength = _springDatas[wheelType]._currentLength;
         float currentLength;
 
-        if(Physics.Raycast(position, -transform.up, out var hit, _vehicleSettings.SpringRestLength))
+        if (Physics.Raycast(position, -transform.up, out var hit, _vehicleSettings.SpringRestLength))
         {
             currentLength = hit.distance;
         }
@@ -231,7 +242,7 @@ public class PlayerVehicleController : MonoBehaviour
 
         float paddingX = _vehicleSettings.WheelsPaddingX;
         float paddingZ = _vehicleSettings.WheelsPaddingZ;
-        
+
         return wheelType switch
         {
             WheelType.FrontLeft => new Vector3(boxSize.x * (paddingX - 0.5f), boxBottom, boxSize.z * (0.5f - paddingZ)),
@@ -253,7 +264,7 @@ public class PlayerVehicleController : MonoBehaviour
 
         float paddingX = _vehicleSettings.WheelsPaddingX;
         float paddingZ = _vehicleSettings.WheelsPaddingZ;
-        
+
         return wheelType switch
         {
             WheelType.FrontLeft => new Vector3(boxSize.x * (paddingX - 0.5f), 0f, boxSize.z * (0.5f - paddingZ)),
@@ -274,7 +285,7 @@ public class PlayerVehicleController : MonoBehaviour
     {
         bool frontWheels = wheelType == WheelType.FrontLeft || wheelType == WheelType.FrontRight;
 
-        if(frontWheels)
+        if (frontWheels)
         {
             var steerQuaternion = Quaternion.AngleAxis(_steerInput * _vehicleSettings.SteerAngle, Vector3.up);
             return steerQuaternion * transform.forward;
@@ -299,6 +310,14 @@ public class PlayerVehicleController : MonoBehaviour
     public float GetSpringCurrentLength(WheelType wheelType)
     {
         return _springDatas[wheelType]._currentLength;
+    }
+    private async void SetOwnerRigidbodyKinematicAsync()
+    {
+        if (IsOwner)
+        {
+            await UniTask.Delay(1);
+            _vehicleRigidbody.isKinematic = false;
+        }
     }
 }
 
