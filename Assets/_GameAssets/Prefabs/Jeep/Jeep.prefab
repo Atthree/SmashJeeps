@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: 3456513813832986181}
   - component: {fileID: 6145686927820802663}
   - component: {fileID: 5765890954461758962}
+  - component: {fileID: 3790247955866093078}
   - component: {fileID: 1131163099570922802}
   - component: {fileID: 435298809148418119}
   - component: {fileID: 2745393703304828979}
@@ -183,6 +184,19 @@ MonoBehaviour:
   _vehicleSettings: {fileID: 11400000, guid: 106a94f86d3892b4b8f1563a924fb58c, type: 2}
   _vehicleRigidbody: {fileID: 5520349603826398117}
   _vehicleCollider: {fileID: 7942059211956287943}
+--- !u!114 &3790247955866093078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361591847494388302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b3e13d761f4e03408f2399d94d7bf7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &1131163099570922802
 MonoBehaviour:
   m_ObjectHideFlags: 0
