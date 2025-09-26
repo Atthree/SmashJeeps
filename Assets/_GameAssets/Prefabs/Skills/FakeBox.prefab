@@ -298,6 +298,7 @@ GameObject:
   - component: {fileID: 729020935835075819}
   - component: {fileID: 3325869725047056696}
   - component: {fileID: 3478612526826027990}
+  - component: {fileID: 4499323595493953644}
   - component: {fileID: 3896869445573051772}
   - component: {fileID: 3810136925432156885}
   m_Layer: 0
@@ -364,6 +365,20 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   TransitionStateInfoList: []
   m_Animator: {fileID: 3581463046794781692}
+--- !u!114 &4499323595493953644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7511873604833912028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48a3364fd4589454d8cccce0d689828a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  _mysteryBoxSkill: {fileID: 11400000, guid: d6a83f31ce27de54bb7bc494b81476c9, type: 2}
 --- !u!114 &3896869445573051772
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -216,6 +216,8 @@ MonoBehaviour:
   _vehicleSettings: {fileID: 11400000, guid: 106a94f86d3892b4b8f1563a924fb58c, type: 2}
   _vehicleRigidbody: {fileID: 5520349603826398117}
   _vehicleCollider: {fileID: 7942059211956287943}
+  _crashForce: 500
+  _crashTorque: -150
 --- !u!114 &3790247955866093078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,6 +262,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _playerVehicleController: {fileID: 5765890954461758962}
+  _jeepVisualTransform: {fileID: 4668718234404689339}
+  _playerCollider: {fileID: 7942059211956287943}
   _wheelFrontLeft: {fileID: 3143450209188381646}
   _wheelFrontRight: {fileID: 8676379915786354171}
   _wheelBackLeft: {fileID: 1974679612218649546}
@@ -328,7 +332,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
   UseRigidBodyForMotion: 0
-  AutoUpdateKinematicState: 1
+  AutoUpdateKinematicState: 0
   AutoSetKinematicOnDespawn: 1
 --- !u!135 &8682576512396399869
 SphereCollider:
