@@ -69,6 +69,8 @@ public class SpawnerManager : NetworkBehaviour
     {
         yield return new WaitForSeconds(respawnTimer);
 
+        if(GameManager.Instance.GetGameState() != GameState.Playing) { yield break; }
+
         if (_respawnPointTransformList.Count == 0)
         {
             Debug.LogError("No available Respawn Points !");
