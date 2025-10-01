@@ -23,10 +23,10 @@ public class FakeBoxDamageable : NetworkBehaviour, IDamageable
         DestroyRpc();
     }
 
-    public void Damage(PlayerVehicleController playerVehicleController)
+    public void Damage(PlayerVehicleController playerVehicleController,string playerName)
     {
         playerVehicleController.CrashVehicle();
-        KillScreenUI.Instance.SetSmashedUI("Rohat",_mysteryBoxSkill.SkillData.RespawnTimer);
+        KillScreenUI.Instance.SetSmashedUI(playerName,_mysteryBoxSkill.SkillData.RespawnTimer);
         DestroyRpc();
     }
 
@@ -54,6 +54,21 @@ public class FakeBoxDamageable : NetworkBehaviour, IDamageable
     {
         return _mysteryBoxSkill.SkillData.RespawnTimer;
     }
+    public int GetDamageAmount()
+    {
+        return _mysteryBoxSkill.SkillData.DamageAmount;
+    }
+    public string GetKillerName()
+    {
+        ulong killerClientId = GetKillerClientId();
+
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(killerClientId, out var killerClient))
+        {
+            string playerName = killerClient.PlayerObject.GetComponent<PlayerNetworkController>().PlayerName.Value.ToString();
+            return playerName;
+        }
+        return string.Empty;
+    }
 
     public override void OnNetworkDespawn()
     {
@@ -66,6 +81,4 @@ public class FakeBoxDamageable : NetworkBehaviour, IDamageable
             playerVehicleController.OnVehicleCrashed -= PlayerVehicleController_OnVehicleCrashed;
         }
     }
-
-    
 }

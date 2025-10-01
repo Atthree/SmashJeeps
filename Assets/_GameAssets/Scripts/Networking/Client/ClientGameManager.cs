@@ -14,6 +14,7 @@ public class ClientGameManager : IDisposable
 {
     private JoinAllocation _joinAllocation;
     private NetworkClient _networkClient;
+    private string _joinCode;
     public async UniTask<bool> InitAsync()
     {
         // Authenticate player
@@ -59,12 +60,27 @@ public class ClientGameManager : IDisposable
         string payload = JsonUtility.ToJson(userData);
         byte[] payloadBytes = Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
- 
+
         NetworkManager.Singleton.StartClient();
+    }
+    public void SetJoinCodeLobby(string joinCode)
+    {
+        _joinCode = joinCode;
+    }
+
+    public string GetJoinCode()
+    {
+        return _joinCode;
+    }
+    public void Disconnect()
+    {
+        _networkClient.Disconnect();
     }
 
     public void Dispose()
     {
         _networkClient?.Dispose();
     }
+
+    
 }

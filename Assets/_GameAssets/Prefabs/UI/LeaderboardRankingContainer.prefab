@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4423915272172824492}
+  - component: {fileID: 8069757088073795329}
   m_Layer: 5
   m_Name: LeaderboardRankingContainer
   m_TagString: Untagged
@@ -38,6 +39,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8069757088073795329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3861668382149414564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c87d4f33c8aa6f489b4c8ec3df51df6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rankText: {fileID: 1222515357306831303}
+  _nameText: {fileID: 478659725466860539}
+  _scoreText: {fileID: 58701350702757699}
+  _ownerColor: {r: 1, g: 0.9607843, b: 0, a: 1}
 --- !u!1 &4214980400829126882
 GameObject:
   m_ObjectHideFlags: 0

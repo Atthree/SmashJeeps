@@ -45,6 +45,20 @@ public class NetworkServer : IDisposable
         response.CreatePlayerObject = true;
     }
 
+    public UserData GetUserDataByClientId(ulong clientId)
+    {
+        if (_clientIdAuthDictionery.TryGetValue(clientId, out string authId))
+        {
+            if (_authIdToUserDataDictionery.TryGetValue(authId, out UserData userData))
+            {
+                return userData;
+            }
+
+            return null;
+        }
+        return null;
+    }
+
     public void Dispose()
     {
         if (_networkManager == null) { return; }

@@ -88,7 +88,7 @@ public class HostGameManager : IDisposable
 
         NetworkManager.Singleton.StartHost();
 
-        NetworkManager.Singleton.SceneManager.LoadScene(Consts.SceneNames.GAME_SCENE, LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene(Consts.SceneNames.CHARACTER_SELECT_SCENE, LoadSceneMode.Single);
     }
 
     private IEnumerator HeartbeatLobby(float waitTimeSeconds)
@@ -100,6 +100,11 @@ public class HostGameManager : IDisposable
             LobbyService.Instance.SendHeartbeatPingAsync(_lobbyId);
             yield return delay;
         }
+    }
+
+    public string GetJoinCode()
+    {
+        return _joinCode;
     }
 
     public async void Shutdown()
