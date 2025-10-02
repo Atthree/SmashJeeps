@@ -4,6 +4,7 @@ using UnityEngine;
 public class RocketDamageable : NetworkBehaviour, IDamageable
 {
     [SerializeField] private MysteryBoxSkillsSO _mysteryBoxSkill;
+    [SerializeField] private GameObject _explosionParticlesPrefab;
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) { return; }
@@ -18,28 +19,33 @@ public class RocketDamageable : NetworkBehaviour, IDamageable
 
     private void PlayerVehicleController_OnVehicleCrashed()
     {
-        DestroyRpc();
+        DestroyRpc(false);
     }
-    public void Damage(PlayerVehicleController playerVehicleController,string playerName)
+    public void Damage(PlayerVehicleController playerVehicleController, string playerName)
     {
         playerVehicleController.CrashVehicle();
         KillScreenUI.Instance.SetSmashedUI(playerName, _mysteryBoxSkill.SkillData.RespawnTimer);
-        DestroyRpc();
+        DestroyRpc(true, playerVehicleController.transform.position);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out ShieldController shieldController))
         {
-            DestroyRpc();
+            DestroyRpc(true, shieldController.transform.position);
         }
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void DestroyRpc()
+    private void DestroyRpc(bool isExploded, Vector3 vehiclePosition = default)
     {
         if (IsServer)
         {
+            if (isExploded)
+            {
+                GameObject explosionParticleInstance = Instantiate(_explosionParticlesPrefab, vehiclePosition, Quaternion.identity);
+                explosionParticleInstance.GetComponent<NetworkObject>().Spawn();
+            }
             Destroy(gameObject);
         }
     }
@@ -68,7 +74,7 @@ public class RocketDamageable : NetworkBehaviour, IDamageable
         }
         return string.Empty;
     }
-    
+
     public override void OnNetworkDespawn()
     {
         if (!IsOwner) { return; }
@@ -80,6 +86,6 @@ public class RocketDamageable : NetworkBehaviour, IDamageable
             playerVehicleController.OnVehicleCrashed -= PlayerVehicleController_OnVehicleCrashed;
         }
     }
-    
+
 }
-    
+

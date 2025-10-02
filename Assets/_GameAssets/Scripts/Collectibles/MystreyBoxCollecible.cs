@@ -11,15 +11,17 @@ public class MystreyBoxCollecible : NetworkBehaviour, ICollectible
     [Header("Settings")]
     [SerializeField] private float _respwanTimer;
 
-    public void Collect(PlayerSkillController playerSkillController)
+    public void Collect(PlayerSkillController playerSkillController, CameraShake cameraShake)
     {
-        if(playerSkillController.HasSkillAlready()) { return; }
+        if (playerSkillController.HasSkillAlready()) { return; }
 
         MysteryBoxSkillsSO skill = GetRandomSkill();
-        SkillsUI.Instance.SetSkill(skill.SkillName, skill.SkillIcon,skill.SkillUsageType, skill.SkillData.SpawnAmountOrTimer);
+        SkillsUI.Instance.SetSkill(skill.SkillName, skill.SkillIcon, skill.SkillUsageType, skill.SkillData.SpawnAmountOrTimer);
         playerSkillController.SetupSkill(skill);
 
         CollectRpc();
+
+        cameraShake.ShakeCamera(0.8f, 0.4f);
 
     }
     [Rpc(SendTo.ClientsAndHost)]

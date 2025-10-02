@@ -10,7 +10,7 @@ public class SkillManager : NetworkBehaviour
     public event Action OnMineCountReduced;
 
     [SerializeField] private MysteryBoxSkillsSO[] _mysteryBoxSkils;
-    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] private LayerMask _groundLayer,_hillLayer;
 
     private Dictionary<SkillType, MysteryBoxSkillsSO> _skillsDictionery;
 
@@ -142,6 +142,12 @@ public class SkillManager : NetworkBehaviour
 
     private float GetGroundHeight(MysteryBoxSkillsSO skillData, Vector3 position)
     {
+        if (Physics.Raycast(new Vector3(position.x, position.y, position.z),
+            Vector3.down, out RaycastHit hit2, 10f, _hillLayer))
+        {
+            return 3f;
+        }
+
         if (Physics.Raycast(new Vector3(position.x, position.y, position.z), Vector3.down, out RaycastHit hit, 10f, _groundLayer))
         {
             return skillData.SkillData.SkillOffset.y;
